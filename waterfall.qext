@@ -1,0 +1,9 @@
+{
+	"name" : "Waterfall Chart",
+	"description" : "Waterfall chart",
+	"icon" : "bar-chart-vertical",
+	"type" : "visualization",
+	"version": "1.0",
+	"preview" : "bar-chart-vertical",
+	"author": "Alexander Karlsson - Developer Relations - akl@qlik.com"
+}

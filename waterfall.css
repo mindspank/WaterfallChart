@@ -1,0 +1,16 @@
+.qv-object-waterfall .rect {
+    border: solid 1px #ccc;
+    shape-rendering: crispEdges;
+    opacity: 1;
+}
+
+.qv-object-waterfall .rect .active {
+    opacity: 1;
+}
+
+.qv-object-waterfall .axis path,
+.qv-object-waterfall .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
