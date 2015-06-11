@@ -295,7 +295,7 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
                         return yScale(Math.abs(d.value));
                     })
                     .style('fill', function(d) {
-                        if(d.label === layout.qDef.totalBarLabel) return layout.qDef.totalcolor;
+                        if(d.label === layout.qDef.totalLabel) return layout.qDef.totalcolor;
                         var color = (d.value < 0) ? layout.qDef.negativecolor : layout.qDef.positivecolor;
                         return color;
                     })
