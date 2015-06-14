@@ -129,6 +129,9 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
                                         label: "False"
                                     }],
                                     defaultValue: false,
+                                    show: function(d) {
+                                        return d.qDef.total;
+                                    }
                                 }
                             }
                         },
@@ -176,7 +179,7 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
                                 xaxis: {
                                     type: "string",
                                     component: "switch",
-                                    label: "Show X-Axis",
+                                    label: "X-Axis",
                                     ref: "qDef.xaxis",
                                     options: [{
                                         value: true,
@@ -190,7 +193,7 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
                                 yaxis: {
                                     type: "string",
                                     component: "switch",
-                                    label: "Show y-Axis",
+                                    label: "Y-Axis",
                                     ref: "qDef.yaxis",
                                     options: [{
                                         value: true,
@@ -216,6 +219,7 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
 
             //Can't be bothered to bind().
             var that = this;
+
             var _f = layout.qHyperCube.qDimensionInfo[0].qGroupFieldDefs[0];
             var calculatedDimension = (_f.toLocaleLowerCase().indexOf('=valueloop') == 0 || _f.toLocaleLowerCase().indexOf('=valuelist') == 0)
 
@@ -232,6 +236,9 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
 
             var format = layout.qDef.abbr;
             var formatNumber = d3.format(".4s");
+
+            //TODO: Move to properties;
+            var invert = false;
 
             var margins = {
                 top: 20,
@@ -259,14 +266,15 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
                     }
                 });
 
+
+            var totalsum = data.map(function(d) {
+                return d.value;
+            }).reduce(function(prev, curr) {
+               return prev + curr;
+            });
+
             //Add totals
             if (useTotal) {
-                var totalsum = data.map(function(d) {
-                    return d.value;
-                }).reduce(function(prev, curr) {
-                   return prev + curr;
-                });
-
                 if (reverse) {
                     data.unshift({
                         label: 'Total',
@@ -343,7 +351,17 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
                     return xScale(d.label);
                 })
                 .attr("y", function(d, i) {
-                    return (d.value < 0) ? height - yScale(d.sum - d.value) : height - yScale(d.sum);
+                    if(invert) {
+                        if(d.label === 'Total') {
+                            return (d.value < 0) ? height - yScale(d.sum - d.value) : height - yScale(d.sum);
+                        } else if ( useTotal && reverse ? i == 1 : i == 0) {
+                            return height - yScale(totalsum);
+                        } else {
+                            return height - yScale(totalsum) + yScale(data[i-1].sum);
+                        }
+                    } else {
+                        return (d.value < 0) ? height - yScale(d.sum - d.value) : height - yScale(d.sum);
+                    };
                 })
                 .attr("width", xScale.rangeBand())
                 .attr("height", function(d,i) {
@@ -372,16 +390,26 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
                     return xScale(d.label) + (xScale.rangeBand() / 2);
                 })
                 .attr("y", function(d, i) {
-                    return (d.value < 0) ? height - yScale(d.sum) + 25 : height - yScale(d.sum);
+                    if(invert) {
+                        if(d.label === 'Total') {
+                            return (d.value < 0) ? height - yScale(d.sum - d.value) : height - yScale(d.sum);
+                        } else if ( useTotal && reverse ? i == 1 : i == 0) {
+                            return height - yScale(totalsum);
+                        } else {
+                            return height - yScale(totalsum) + yScale(data[i-1].sum);
+                        }
+                    } else {
+                        return (d.value < 0) ? height - yScale(d.sum - d.value) : height - yScale(d.sum);
+                    };
                 })
                 .attr('dy', -5)
                 .attr('text-anchor', 'middle')
                 .text(function(d) {
                     var val = '';
                     if (datapoint == 'exp') {
-                        val = formatNumber(d.value);
+                        val = format ? formatNumber(d.value) : d.value;
                     } else if (datapoint === 'cum') {
-                        val = formatNumber(d.sum)
+                        val = format ? formatNumber(d.sum) : d.sum;
                     };
                     return val;
                 });
