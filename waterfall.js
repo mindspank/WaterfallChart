@@ -60,6 +60,34 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
                                 }
                             }
                         },
+                        offset: {
+                            type: "items",
+                            label: "Offset first bar",
+                            items: {
+                                useoffset: {
+                                    label: "Offset",
+                                    type: "boolean",
+                                    component: "switch",
+                                    options: [{
+                                        label: "Disabled",
+                                        value: false
+                                    }, {
+                                        label: "Enabled",
+                                        value: true
+                                    }],
+                                    ref: "qDef.useoffset",
+                                    defaultValue: false
+                                },
+                                offsetby: {
+                                    type: "number",
+                                    expression: "optional",
+                                    ref: "qDef.offsetby",
+                                    show: function(d) {
+                                        return d.qDef.useoffset;
+                                    }
+                                }
+                            }
+                        },
                         total: {
                             type: "items",
                             label: "Show Total",
@@ -188,11 +216,16 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
 
             //Can't be bothered to bind().
             var that = this;
+            var _f = layout.qHyperCube.qDimensionInfo[0].qGroupFieldDefs[0];
+            var calculatedDimension = (_f.toLocaleLowerCase().indexOf('=valueloop') == 0 || _f.toLocaleLowerCase().indexOf('=valuelist') == 0)
 
             var datapoint = layout.qDef.dataPoints;
 
             var useTotal = layout.qDef.total;
             var reverse = layout.qDef.reverse;
+
+            var useOffest = layout.qDef.useoffset;
+            var offsetBy = (useOffest && layout.qDef.offsetby != 'NaN') ? layout.qDef.offsetby : 0;
 
             var useX = layout.qDef.xaxis;
             var useY = layout.qDef.yaxis;
@@ -226,8 +259,6 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
                     }
                 });
 
-            console.log(layout, data)
-
             //Add totals
             if (useTotal) {
                 var totalsum = data.map(function(d) {
@@ -256,17 +287,23 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
             var width = $element.width() - margins.left - margins.right;
             var height = $element.height() - margins.top - margins.bottom;
 
-            var yScale = d3.scale.linear()
-                .domain([0, d3.max(data, function(d) {
+            var max = d3.max(data, function(d) {
                     return d.sum
-                }) * 1.05])
-                .range([0, height]);
+                }) * 1.05;
+
+            var min = 0;
+
+            var yScale = d3.scale.linear()
+                .domain([min, max])
+                .range([min, height]);
 
             var y = d3.scale.linear()
-                .domain([0, d3.max(data, function(d) {
-                    return d.sum
-                }) * 1.05])
-                .range([height, 0]);
+                .domain([min, max])
+                .range([height, min]);
+
+            var yScaleOffset = d3.scale.linear()
+                .domain([0, max])
+                .range([offsetBy, height]);
 
             var yAxis = d3.svg.axis()
                 .scale(y)
@@ -309,16 +346,21 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
                     return (d.value < 0) ? height - yScale(d.sum - d.value) : height - yScale(d.sum);
                 })
                 .attr("width", xScale.rangeBand())
-                .attr("height", function(d) {
+                .attr("height", function(d,i) {
+                    if(useOffest && i === 0) {
+                        return yScale(Math.abs(d.value)) - yScale(offsetBy);
+                    }
                     return yScale(Math.abs(d.value));
                 })
                 .style('fill', function(d) {
                     if (d.label === layout.qDef.totalLabel) return layout.qDef.totalcolor;
                     var color = (d.value < 0) ? layout.qDef.negativecolor : layout.qDef.positivecolor;
                     return color;
-                })
-                .style('cursor', 'pointer')
-                .on('click', handleClick);
+                });
+
+                if(!calculatedDimension) {
+                    svg.selectAll('rect').style('cursor', 'pointer').on('click', handleClick);
+                }
 
 
             var barLabels = svg.append("g")
@@ -355,7 +397,12 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
             };
 
             function handleClick(d, i) {
+                //Break if in edit mode.
+                if(that.$scope.$parent.$parent.editmode) return;
+
+                //Can't select the total bar.
                 if (d.element == 'total') return;
+
                 that.selectValues(0, [d.element], true);
 
                 if (that.selectedArrays[0].length === 0) {
