@@ -33,6 +33,21 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
                 settings: {
                     uses: "settings",
                     items: {
+                        inverse: {
+                            type: "items",
+                            label: "Inverse bars",
+                            ref: "qDef.inverse",
+                            type: "boolean",
+                            defaultValue: false,
+                            component: "switch",
+                            options: [{
+                                    "label": "Disabled",
+                                    value: false
+                                },{
+                                    label: "Enabled",
+                                    value: true
+                                }]
+                        },
                         colors: {
                             type: "items",
                             label: "Colors",
@@ -53,7 +68,7 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
                                 },
                                 total: {
                                     ref: "qDef.totalcolor",
-                                    label: "Total",
+                                    label: "Color",
                                     type: "string",
                                     expression: "optional",
                                     defaultValue: "#545352"
@@ -90,12 +105,12 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
                         },
                         total: {
                             type: "items",
-                            label: "Show Total",
+                            label: "Show total bar",
                             items: {
                                 total: {
                                     type: "string",
                                     component: "switch",
-                                    label: "Show Totals",
+                                    label: "Enable Totals",
                                     ref: "qDef.total",
                                     options: [{
                                         value: true,
@@ -237,8 +252,7 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
             var format = layout.qDef.abbr;
             var formatNumber = d3.format(".4s");
 
-            //TODO: Move to properties;
-            var invert = false;
+            var invert = layout.qDef.inverse;
 
             var margins = {
                 top: 20,
