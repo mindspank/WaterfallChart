@@ -57,21 +57,21 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
                                     label: "Positive",
                                     type: "string",
                                     expression: "optional",
-                                    defaultValue: "#4477aa"
+                                    defaultValue: "rgb(68,119,170)"
                                 },
                                 negative: {
                                     ref: "waterfall.negativecolor",
                                     label: "Negative",
                                     type: "string",
                                     expression: "optional",
-                                    defaultValue: "#f93f17"
+                                    defaultValue: "rgb(249,63,23)"
                                 },
                                 total: {
                                     ref: "waterfall.totalcolor",
                                     label: "Color",
                                     type: "string",
                                     expression: "optional",
-                                    defaultValue: "#545352"
+                                    defaultValue: "rgb(123,122,120)"
                                 }
                             }
                         },
