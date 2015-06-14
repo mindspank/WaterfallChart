@@ -11,6 +11,6 @@
 .qv-object-waterfall .axis path,
 .qv-object-waterfall .axis line {
     fill: none;
-    stroke: #000;
+    stroke: #ccc;
     shape-rendering: crispEdges;
 }
