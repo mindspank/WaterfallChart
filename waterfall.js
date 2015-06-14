@@ -36,7 +36,7 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
                         inverse: {
                             type: "items",
                             label: "Inverse bars",
-                            ref: "qDef.inverse",
+                            ref: "waterfall.inverse",
                             type: "boolean",
                             defaultValue: false,
                             component: "switch",
@@ -53,21 +53,21 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
                             label: "Colors",
                             items: {
                                 positive: {
-                                    ref: "qDef.positivecolor",
+                                    ref: "waterfall.positivecolor",
                                     label: "Positive",
                                     type: "string",
                                     expression: "optional",
                                     defaultValue: "#4477aa"
                                 },
                                 negative: {
-                                    ref: "qDef.negativecolor",
+                                    ref: "waterfall.negativecolor",
                                     label: "Negative",
                                     type: "string",
                                     expression: "optional",
                                     defaultValue: "#f93f17"
                                 },
                                 total: {
-                                    ref: "qDef.totalcolor",
+                                    ref: "waterfall.totalcolor",
                                     label: "Color",
                                     type: "string",
                                     expression: "optional",
@@ -90,15 +90,15 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
                                         label: "Enabled",
                                         value: true
                                     }],
-                                    ref: "qDef.useoffset",
+                                    ref: "waterfall.useoffset",
                                     defaultValue: false
                                 },
                                 offsetby: {
                                     type: "number",
                                     expression: "optional",
-                                    ref: "qDef.offsetby",
+                                    ref: "waterfall.offsetby",
                                     show: function(d) {
-                                        return d.qDef.useoffset;
+                                        return d.waterfall.useoffset;
                                     }
                                 }
                             }
@@ -111,7 +111,7 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
                                     type: "string",
                                     component: "switch",
                                     label: "Enable Totals",
-                                    ref: "qDef.total",
+                                    ref: "waterfall.total",
                                     options: [{
                                         value: true,
                                         label: "Show"
@@ -122,20 +122,20 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
                                     defaultValue: true,
                                 },
                                 totalLabel: {
-                                    ref: "qDef.totalLabel",
+                                    ref: "waterfall.totalLabel",
                                     label: "Label",
                                     type: "string",
                                     expression: "optional",
                                     defaultValue: "Total",
                                     show: function(d) {
-                                        return d.qDef.total;
+                                        return d.waterfall.total;
                                     }
                                 },
                                 reverse: {
                                     type: "string",
                                     component: "switch",
                                     label: "Reverse placement",
-                                    ref: "qDef.reverse",
+                                    ref: "waterfall.reverse",
                                     options: [{
                                         value: true,
                                         label: "True"
@@ -145,7 +145,7 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
                                     }],
                                     defaultValue: false,
                                     show: function(d) {
-                                        return d.qDef.total;
+                                        return d.waterfall.total;
                                     }
                                 }
                             }
@@ -158,7 +158,7 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
                                     type: "string",
                                     component: "switch",
                                     label: "Abbreviate numbers",
-                                    ref: "qDef.abbr",
+                                    ref: "waterfall.abbr",
                                     options: [{
                                         value: true,
                                         label: "Yes"
@@ -169,7 +169,7 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
                                     defaultValue: true,
                                 },
                                 datapoints: {
-                                    ref: "qDef.dataPoints",
+                                    ref: "waterfall.dataPoints",
                                     label: "Datapoints",
                                     component: "dropdown",
                                     options: [{
@@ -195,7 +195,7 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
                                     type: "string",
                                     component: "switch",
                                     label: "X-Axis",
-                                    ref: "qDef.xaxis",
+                                    ref: "waterfall.xaxis",
                                     options: [{
                                         value: true,
                                         label: "Show"
@@ -209,7 +209,7 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
                                     type: "string",
                                     component: "switch",
                                     label: "Y-Axis",
-                                    ref: "qDef.yaxis",
+                                    ref: "waterfall.yaxis",
                                     options: [{
                                         value: true,
                                         label: "Show"
@@ -238,21 +238,21 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
             var _f = layout.qHyperCube.qDimensionInfo[0].qGroupFieldDefs[0];
             var calculatedDimension = (_f.toLocaleLowerCase().indexOf('=valueloop') == 0 || _f.toLocaleLowerCase().indexOf('=valuelist') == 0)
 
-            var datapoint = layout.qDef.dataPoints;
+            var datapoint = layout.waterfall.dataPoints;
 
-            var useTotal = layout.qDef.total;
-            var reverse = layout.qDef.reverse;
+            var useTotal = layout.waterfall.total;
+            var reverse = layout.waterfall.reverse;
 
-            var useOffest = layout.qDef.useoffset;
-            var offsetBy = (useOffest && layout.qDef.offsetby != 'NaN') ? layout.qDef.offsetby : 0;
+            var useOffest = layout.waterfall.useoffset;
+            var offsetBy = (useOffest && layout.waterfall.offsetby != 'NaN') ? layout.waterfall.offsetby : 0;
 
-            var useX = layout.qDef.xaxis;
-            var useY = layout.qDef.yaxis;
+            var useX = layout.waterfall.xaxis;
+            var useY = layout.waterfall.yaxis;
 
-            var format = layout.qDef.abbr;
+            var format = layout.waterfall.abbr;
             var formatNumber = d3.format(".4s");
 
-            var invert = layout.qDef.inverse;
+            var invert = layout.waterfall.inverse;
 
             var margins = {
                 top: 20,
@@ -385,8 +385,8 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
                     return yScale(Math.abs(d.value));
                 })
                 .style('fill', function(d) {
-                    if (d.label === layout.qDef.totalLabel) return layout.qDef.totalcolor;
-                    var color = (d.value < 0) ? layout.qDef.negativecolor : layout.qDef.positivecolor;
+                    if (d.label === layout.waterfall.totalLabel) return layout.waterfall.totalcolor;
+                    var color = (d.value < 0) ? layout.waterfall.negativecolor : layout.waterfall.positivecolor;
                     return color;
                 });
 
