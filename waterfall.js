@@ -34,7 +34,6 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function($, css) {
                     uses: "settings",
                     items: {
                         inverse: {
-                            type: "items",
                             label: "Inverse bars",
                             ref: "waterfall.inverse",
                             type: "boolean",
