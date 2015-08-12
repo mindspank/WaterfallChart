@@ -293,14 +293,14 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function ($, css) {
             if (useTotal) {
                 if (reverse) {
                     data.unshift({
-                        label: 'Total',
+                        label: layout.waterfall.totalLabel,
                         value: totalsum,
                         element: 'total',
                         sum: totalsum
                     })
                 } else {
                     data.push({
-                        label: 'Total',
+                        label: layout.waterfall.totalLabel,
                         value: totalsum,
                         element: 'total',
                         sum: totalsum
@@ -372,14 +372,14 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function ($, css) {
                     return d.element
                 })
                 .attr("class", function (d) {
-                    return d.label === "Total" ? "total" : (d.value < 0) ? "negative" : "positive";
+                    return d.label === layout.waterfall.totalLabel ? "total" : (d.value < 0) ? "negative" : "positive";
                 })
                 .attr("x", function (d) {
                     return xScale(d.label);
                 })
                 .attr("y", function (d, i) {
                     if (invert) {
-                        if (d.label === 'Total') {
+                        if (d.label === layout.waterfall.totalLabel) {
                             return (d.value < 0) ? height - yScale(d.sum - d.value) : height - yScale(d.sum);
                         } else if (useTotal && reverse ? i == 1 : i == 0) {
                             return height - yScale(totalsum);
