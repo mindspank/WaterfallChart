@@ -418,7 +418,7 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function ($, css) {
                 })
                 .attr("y", function (d, i) {
                     if (invert) {
-                        if (d.label === 'Total') {
+                        if (d.label === 'layout.waterfall.totalLabel') {
                             return (d.value < 0) ? height - yScale(d.sum - d.value) : height - yScale(d.sum);
                         } else if (useTotal && reverse ? i == 1 : i == 0) {
                             return height - yScale(totalsum);
