@@ -262,15 +262,17 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function ($, css) {
                 left: 55,
                 bottom: 55
             };
+            
+            var othersLabel = layout.qHyperCube.qDimensionInfo[0].othersLabel;
 
             //Filter dimensions and map for cumulative sums
             var data = layout.qHyperCube.qDataPages[0].qMatrix
                 .filter(function (d) {
-                    return d[0].qText !== undefined;
+                    return d[0].qText !== undefined || d[0].qIsOtherCell;
                 })
                 .map(function (d, i, arr) {
                     return {
-                        label: d[0].qText,
+                        label: d[0].qIsOtherCell ? othersLabel : d[0].qText,
                         value: d[1].qNum,
                         element: d[0].qElemNumber,
                         sum: (i === 0) ? d[1].qNum : arr.map(function (d) {
@@ -281,8 +283,7 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function ($, css) {
                         })
                     }
                 });
-
-
+                
             var totalsum = data.map(function (d) {
                 return d.value;
             }).reduce(function (prev, curr) {
@@ -418,7 +419,7 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function ($, css) {
                 })
                 .attr("y", function (d, i) {
                     if (invert) {
-                        if (d.label === layout.waterfall.totalLabel) {
+                        if (d.label === 'Total') {
                             return (d.value < 0) ? height - yScale(d.sum - d.value) : height - yScale(d.sum);
                         } else if (useTotal && reverse ? i == 1 : i == 0) {
                             return height - yScale(totalsum);
