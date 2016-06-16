@@ -43,8 +43,8 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function ($, css) {
                                 "label": "Disabled",
                                 value: false
                             }, {
-                                    label: "Enabled",
-                                    value: true
+                                label: "Enabled",
+                                value: true
                                 }]
                         },
                         colors: {
@@ -86,8 +86,8 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function ($, css) {
                                         label: "Disabled",
                                         value: false
                                     }, {
-                                            label: "Enabled",
-                                            value: true
+                                        label: "Enabled",
+                                        value: true
                                         }],
                                     ref: "waterfall.useoffset",
                                     defaultValue: false
@@ -115,8 +115,8 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function ($, css) {
                                         value: true,
                                         label: "Show"
                                     }, {
-                                            value: false,
-                                            label: "Hide"
+                                        value: false,
+                                        label: "Hide"
                                         }],
                                     defaultValue: true,
                                 },
@@ -139,8 +139,8 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function ($, css) {
                                         value: true,
                                         label: "True"
                                     }, {
-                                            value: false,
-                                            label: "False"
+                                        value: false,
+                                        label: "False"
                                         }],
                                     defaultValue: false,
                                     show: function (d) {
@@ -162,8 +162,8 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function ($, css) {
                                         value: true,
                                         label: "Yes"
                                     }, {
-                                            value: false,
-                                            label: "No"
+                                        value: false,
+                                        label: "No"
                                         }],
                                     defaultValue: true,
                                 },
@@ -175,11 +175,11 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function ($, css) {
                                         value: "no",
                                         label: "No datapoints"
                                     }, {
-                                            value: "exp",
-                                            label: "Expression value"
+                                        value: "exp",
+                                        label: "Expression value"
                                         }, {
-                                            value: "cum", //hoho
-                                            label: "Cumulative"
+                                        value: "cum", //hoho
+                                        label: "Cumulative"
                                         }],
                                     type: "string",
                                     defaultValue: "exp"
@@ -199,8 +199,8 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function ($, css) {
                                         value: true,
                                         label: "Show"
                                     }, {
-                                            value: false,
-                                            label: "Hide"
+                                        value: false,
+                                        label: "Hide"
                                         }],
                                     defaultValue: true
                                 },
@@ -213,8 +213,8 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function ($, css) {
                                         value: true,
                                         label: "Show"
                                     }, {
-                                            value: false,
-                                            label: "Hide"
+                                        value: false,
+                                        label: "Hide"
                                         }],
                                     defaultValue: true
                                 }
@@ -232,7 +232,7 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function ($, css) {
             $element.empty();
             //Can't be bothered to bind().
             var that = this;
-            
+
             var maxGlyph = layout.qHyperCube.qDimensionInfo[0].qApprMaxGlyphCount < 5 ? 5 : layout.qHyperCube.qDimensionInfo[0].qApprMaxGlyphCount;
             var maxLabel = maxGlyph * 9;
             var rotateLabels = false;
@@ -262,7 +262,7 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function ($, css) {
                 left: 55,
                 bottom: 55
             };
-            
+
             var othersLabel = layout.qHyperCube.qDimensionInfo[0].othersLabel;
 
             //Filter dimensions and map for cumulative sums
@@ -283,7 +283,7 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function ($, css) {
                         })
                     }
                 });
-                
+
             var totalsum = data.map(function (d) {
                 return d.value;
             }).reduce(function (prev, curr) {
@@ -316,25 +316,25 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function ($, css) {
             }) * 1.05;
 
             var min = 0;
-            
+
             var xScale = d3.scale.ordinal()
                 .rangeRoundBands([0, width])
                 .domain(data.map(function (d) {
                     return d.label
                 }));
 
-            if( maxLabel > 55 ) {
-               margins.bottom = maxLabel;
-               rotateLabels = true;
+            if (maxLabel > 55) {
+                margins.bottom = maxLabel;
+                rotateLabels = true;
             }
-            
-            if( maxLabel < xScale.rangeBand() ) {
-              margins.bottom = 55;
-              rotateLabels = false;
+
+            if (maxLabel < xScale.rangeBand()) {
+                margins.bottom = 55;
+                rotateLabels = false;
             };
-            
+
             var height = $element.height() - margins.top - margins.bottom;
-                
+
             var yScale = d3.scale.linear()
                 .domain([min, max])
                 .range([min, height]);
@@ -454,7 +454,7 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function ($, css) {
             if (useX && rotateLabels) {
                 svg.selectAll(".xaxis text")
                     .style("text-anchor", "end")
-                    .attr("transform", function(d) {
+                    .attr("transform", function (d) {
                         return "translate(" + -8 + "," + 0 + ")rotate(-45)";
                     });
             };
@@ -463,8 +463,8 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function ($, css) {
                 //Break if in edit mode.
                 if (that.$scope.$parent.$parent.editmode) return;
 
-                //Can't select the total bar.
-                if (d.element == 'total') return;
+                //Can't select the total bar or NULL.
+                if (d.element == 'total' || d.element == -2) return;
 
                 that.selectValues(0, [d.element], true);
 
