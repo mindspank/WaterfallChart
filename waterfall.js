@@ -167,6 +167,20 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function ($, css) {
                                         }],
                                     defaultValue: true,
                                 },
+                                percent: {
+                                    type: "string",
+                                    component: "switch",
+                                    label: "Show in %",
+                                    ref: "waterfall.pct",
+                                    options: [{
+                                        value: true,
+                                        label: "Yes"
+                                    }, {
+                                        value: false,
+                                        label: "No"
+                                        }],
+                                    defaultValue: false,
+                                },
                                 datapoints: {
                                     ref: "waterfall.dataPoints",
                                     label: "Datapoints",
@@ -253,6 +267,11 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function ($, css) {
 
             var format = layout.waterfall.abbr;
             var formatNumber = d3.format(".4s");
+            
+            var formatPct = layout.waterfall.pct;
+            var formatNumberPct = d3.format(".2%");
+
+            var formatScale = formatPct ? d3.format(".2%") : d3.format("s");
 
             var invert = layout.waterfall.inverse;
 
@@ -350,8 +369,8 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function ($, css) {
             var yAxis = d3.svg.axis()
                 .scale(y)
                 .orient("left")
-                .tickFormat(d3.format("s"));
-
+                //.tickFormat(d3.format("s"))
+                .tickFormat(formatScale);
             var xAxis = d3.svg.axis()
                 .scale(xScale)
                 .orient("bottom");
@@ -436,8 +455,10 @@ define(["jquery", "text!./waterfall.css", "./d3.min"], function ($, css) {
                     var val = '';
                     if (datapoint == 'exp') {
                         val = format ? formatNumber(d.value) : d.value;
+                        if(formatPct)  val = formatNumberPct(d.value);                        
                     } else if (datapoint === 'cum') {
                         val = format ? formatNumber(d.sum) : d.sum;
+                        if(formatPct) val = formatNumberPct(d.sum); 
                     };
                     return val;
                 });
